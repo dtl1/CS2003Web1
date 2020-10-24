@@ -2,6 +2,8 @@
  * This is a starting point only -- not yet complete!
  */
 
+const { parse } = require("path");
+
 /*
  * item_id: string (id of item)
  * element: string (tag name of element)
@@ -30,10 +32,58 @@ function setStockItemValue(item_id, element, value) {
  */
 function updateLineCost(e, item_id) {
   var p = getStockItemValue(item_id, "item_price");
-  var q = e.value;
+  var q = e.value;  
   var c = p * q; // implicit type conversion
   c = c.toFixed(2); // 2 decimal places always.
   setStockItemValue(item_id, "line_cost", c);
 
-  // Also need to update sub_total, delivery_charge, vat, and total.
+
+  updateTotals();
+  
+}
+
+
+  //updates subtotal, delivery charge and VAT and total
+  function updateTotals(){
+
+    /////////////////////// sub total /////////////////////
+    var lineCosts = document.getElementsByTagName("line_cost");
+
+    var subTotal = 0;
+
+    for(let index = 1; index < lineCosts.length; index++ ) {
+      subTotal += +lineCosts[index].innerHTML;
+    }
+    
+    subTotal = subTotal.toFixed(2);
+
+    //update the sub total element
+    document.getElementById("sub_total").innerHTML = " £" + subTotal;
+     /////////////////////// sub total /////////////////////  
+
+
+    /////////////////////// delivery charge /////////////////////
+    var deliveryCharge = 0;
+    
+    if (subTotal < 100)
+        deliveryCharge = (subTotal * 0.10).toFixed(2);
+
+    document.getElementById("delivery_charge").innerHTML = " £" + deliveryCharge;
+    /////////////////////// delivery charge /////////////////////
+
+
+
+    /////////////////////// vat /////////////////////
+    var vat = ((+deliveryCharge + +subTotal) * 0.20).toFixed(2);
+
+    document.getElementById("vat").innerHTML = " £" + vat;
+    /////////////////////// vat /////////////////////
+
+
+
+    /////////////////////// total /////////////////////
+    var total = (+deliveryCharge + +subTotal + +vat).toFixed(2);
+
+    document.getElementById("total").innerHTML = " £" + total;
+    /////////////////////// total /////////////////////
 }
