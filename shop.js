@@ -1,4 +1,4 @@
-const root = "/cs2003\/shop\/";  // for running from my home space - you will need to change this as appropriate
+const root = "";  
 const photo_root = root + "piks\/large\/";
 const thumbs_root = root + "piks\/thumbnail\/";
 const css_file = root + "shopfront.css";
@@ -75,7 +75,7 @@ function generateStockItem( id, photo, name, comment, price, quantity, total, re
 		if( report ) {
 			strVar += "    <item_quantity>" + quantity + "</item_quantity>";
 		} else {
-			strVar += "    <item_quantity><input name=\"" + id + "\" type=\"text\" value=\"0\" pattern=\"[0-9]+\" size=\"3\" onchange=\"updateCosts('" + id + "');\" \/><\/item_quantity>";
+			strVar += "    <item_quantity><input name=\"" + id + "\" type=\"text\" value=\"0\" pattern=\"[0-9]+\" size=\"3\" onchange=\"updateLineCost(this, '" + id + "');\" \/><\/item_quantity>";
 		}
 		strVar += "    <line_cost>" +  total + "<\/line_cost>";
 		strVar += "  <\/stock_item>";
@@ -219,7 +219,7 @@ function generateOrderBody() {
 	strVar += "<h1>Items for Sale<\/h1>";
 	strVar += "<hr \/>";
 	strVar += generateForm();
-//	strVar += "<script src=\"" + script_src + "\"><\/script>";
+	strVar += "<script src=\"" + script_src + "\"><\/script>";
 	strVar += "<\/body>";
 
 	return strVar;
@@ -248,7 +248,7 @@ function generateReceiptHTML() {
 	return strVar;
 }
 
-function sendReply( res  ) {
+function sendReply(res) {
 	res.writeHead(200, {'Content-Type': 'text/html'});
 	res.write( generateReceiptHTML() );
 	res.end();
@@ -271,11 +271,24 @@ function handlePost( req, res ) {
 
 }
 
+//matthews handle get
 function handleGet( req, res ) {
-	console.log('get: ' + req.url);
-	res.writeHead(200, {'Content-Type': 'text/html'});
-	res.write( generateOrderHTML() );
-	res.end();
+    console.log('get: ' + req.url);
+    if (req.url === '/'){
+        res.writeHead(200, {'Content-Type': 'text/html'});
+        res.write( generateOrderHTML() );
+        res.end();
+    } else {
+        fs.readFile('./' + req.url, (err, data) => {
+            if (err) {
+              res.writeHead(404);
+              res.end(JSON.stringify(err));
+              return;
+            }
+            res.writeHead(200);
+            res.end(data);
+        });
+    }
 }
 
 ///////////////////// The Server ///////////////////// 
