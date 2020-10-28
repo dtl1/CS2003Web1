@@ -1,7 +1,3 @@
-/*
- * This is a starting point only -- not yet complete!
- */
-
 const { parse } = require("path");
 
 /*
@@ -57,9 +53,9 @@ function updateLineCost(e, item_id) {
     
     subTotal = subTotal.toFixed(2);
 
-    //update the sub total element
+    
     document.getElementById("sub_total").innerHTML = " £" + subTotal;
-     /////////////////////// sub total /////////////////////  
+    /////////////////////// sub total /////////////////////  
 
 
     /////////////////////// delivery charge /////////////////////
@@ -87,3 +83,4 @@ function updateLineCost(e, item_id) {
     document.getElementById("total").innerHTML = " £" + total;
     /////////////////////// total /////////////////////
 }
+
